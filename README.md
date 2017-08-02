@@ -1,4 +1,4 @@
-# by Nurislam Tursynbek
+# by NurislamT
 This is the implementation of the "Identifying a 229-Gene Signature to Discriminate Anaplastic Astrocytoma from Glioblastoma Using Meta-analysis of Multiple Microarray Datasets" paper.
 The code is written in R programming language
 The structure is following:
