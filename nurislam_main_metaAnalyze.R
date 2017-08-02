@@ -157,7 +157,7 @@ plotCoefficients(fitResult, lambda, classLevels=classesTrain, geneIdOrder=geneId
 annoNames = c('study', 'class')
 annoLevels = list(studyMetadata[studyMetadata[,'discovery'],'study'], classesTrain)
 names(annoLevels) = annoNames
-annoColors = list(colors = c("#132B43", "#56B1F7"))
+annoColors = list(brewer.pal(4, 'Paired'))
 names(annoColors) = 'class'
 names(annoColors[[1]]) = classesTrain
 
@@ -216,14 +216,38 @@ pamData = list(x=x, y=y, geneid=rownames(ematMerged))
 pamTrain = pamr.train(pamData)
 genes_list = pamr.listgenes(pamTrain,pamData, threshold=5.32939)[,'id']
 genes=genes_list
-geneTexts[122]="SNRPN"
-geneTexts[76]= "TXNDC5"
-geneTexts[190]="MIR21"
-geneTexts[206]="FAM45A"
-geneTexts[57]="TMSB4X"
-geneTexts[68]="MYL12A"
+genes[122]="SNRPN"
+genes[76]= "TXNDC5"
+genes[190]="MIR21"
+genes[206]="FAM45A"
+genes[57]="TMSB4X"
+genes[68]="MYL12A"
+geneTexts = sprintf('%s', genes_list)
+names(geneTexts)=geneTexts
 
+emat = ematMerged[genes_list,]
+d = dist(t(emat))
+co = order.optimal(d, hclust(d)$merge)
+emat = emat[,co$order]
 
+d = dist(emat)
+co = order.optimal(d, hclust(d)$merge)
+emat = emat[co$order,]
+rownames(emat) = geneTexts[co$order]
+
+annotation = sampleMetadata[colnames(ematMerged), annoNames, drop=FALSE]
+for (annoName in annoNames) {
+		if (!is.na(annoLevels[[annoName]][1])) {
+		annotation[,annoName] = factor(annotation[,annoName], levels=annoLevels[[annoName]])}}
+	
+# heatmap
+
+emat=ematMergedDiscovery
+pdf(file=sprintf('hello.pdf'), width=width, height=height)
+pheatmap(emat, color=colorRampPalette(rev(greenred(32)))(100),
+breaks=seq(from=-3, to=3, length.out=101), cluster_rows=TRUE, cluster_cols=TRUE, treeheight_row=0,fontsize_row=2.75,
+treeheight_col=0, show_colnames=FALSE, border_color=NA, annotation=annotation, annotation_colors=annoColors)
+	dev.off()
 
 
 	
