@@ -1,4 +1,3 @@
-# by NurislamT
 The code is written in R programming language
 The structure is following:
 1) metaAnalyzeInstall.R - is the R file wirh installation of all dependencies
